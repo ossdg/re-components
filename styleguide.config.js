@@ -7,37 +7,37 @@ const glob = require('glob');
 module.exports = {
 	sections: [
 		{
+			name: 'Introduction',
+			content: 'docs/introduction.md'
+		},
+		{
 			name: 'Elements',
 			components: () => {
 
-				return glob.sync(path.resolve(__dirname, 'packages/elements/**/docs/*.{js,jsx}'))
+				return glob.sync(path.resolve(__dirname, 'packages/elements/**/src/*.{js,jsx}'))
 					.filter(module => {
 						return !(/(__tests__|examples|simple\/)/.test(module));
 					});
 			}
-		}
-		,
+		},
 		{
 			name: 'Modules',
 			components: () => {
 
-				return glob.sync(path.resolve(__dirname, 'packages/modules/**/docs/*.{js,jsx}'))
+				return glob.sync(path.resolve(__dirname, 'packages/modules/**/src/*.{js,jsx}'))
 					.filter(module => {
 						return !(/(__tests__|examples|simple\/)/.test(module));
 					});
 			}
 		}
 	],
-	// getExampleFilename(componentPath) {
-	// 	var parsed = path.parse(componentPath);
-	// 	return path.join(parsed.dir, parsed.name + '.examples.md');
-	// },
-	// components: 'packages/**/docs/*.{js,jsx}',
-	// getComponentPathLine(componentPath) {
-	// 	let newPath = componentPath.replace(/docs([^/]+)?([/].+jsx|.+js)$/, 'src');
-	// 	const name = path.basename(componentPath, '.js');
-	// 	return `import ${name} from '${newPath}';`
-	// },
+	skipComponentsWithoutExample: true,
+	getExampleFilename(componentPath) {
+		var parsed = path.parse(componentPath);
+		let newPath = componentPath.replace(/src([^/]+)?([/].+jsx|.+js)$/, 'docs');
+
+		return path.join(newPath, parsed.name + '.md');
+	},
 	title: 'Re-Components',
 	template: "./styleguide.template.html",
 	theme: {
@@ -63,7 +63,7 @@ module.exports = {
 	styles: {
 		Logo: {
 			logo: {
-				animation: 'blink ease-in-out 500ms infinite'
+				animation: 'blink ease-in-out 1000ms infinite'
 			},
 			'@keyframes blink': {
 				to: {
@@ -71,7 +71,12 @@ module.exports = {
 				}
 			}
 		}
-	}
+	},
+	propsParser(filePath, source, resolver, handlers) {
+	 return require('react-docgen').parse(source, resolver, handlers)
+ },
+ resolver: require('react-docgen').resolver
+	 .findExportedComponentDefinition
 
 
 
