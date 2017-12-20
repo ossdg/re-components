@@ -5,6 +5,7 @@ const glob = require('glob');
 
 
 module.exports = {
+	styleguideDir: './',
 	sections: [
 		{
 			name: 'Introduction',
