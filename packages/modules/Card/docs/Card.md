@@ -1,7 +1,7 @@
-ProButton example:
+Card example:
 
 whre you can do nothing
 
 ```js
-<ProButton />
+<Card />
 ```
